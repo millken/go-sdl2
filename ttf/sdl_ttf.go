@@ -352,9 +352,9 @@ func (f *Font) FaceFamilyName() string {
 // FaceStyleName returns the current font face family's style name from the loaded font.
 // (https://wiki.libsdl.org/SDL_ttf/TTF_FontFaceStyleName)
 func (f *Font) FaceStyleName() string {
-        _fname := C.TTF_FontFaceStyleName(f.f)
-        fname := C.GoString(_fname)
-        return fname
+	_fname := C.TTF_FontFaceStyleName(f.f)
+	fname := C.GoString(_fname)
+	return fname
 }
 
 // GlyphMetrics contains glyph-specific rendering metrics.

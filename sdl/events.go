@@ -275,10 +275,10 @@ const (
 	CONTROLLERDEVICEADDED    EventType = C.SDL_CONTROLLERDEVICEADDED    // controller connected
 	CONTROLLERDEVICEREMOVED  EventType = C.SDL_CONTROLLERDEVICEREMOVED  // controller disconnected
 	CONTROLLERDEVICEREMAPPED EventType = C.SDL_CONTROLLERDEVICEREMAPPED // controller mapping updated
-    CONTROLLERTOUCHPADDOWN   EventType = C.SDL_CONTROLLERTOUCHPADDOWN   // Game controller touchpad was touched
-    CONTROLLERTOUCHPADMOTION EventType = C.SDL_CONTROLLERTOUCHPADMOTION // Game controller touchpad finger was moved
-    CONTROLLERTOUCHPADUP     EventType = C.SDL_CONTROLLERTOUCHPADUP     // Game controller touchpad finger was lifted
-    CONTROLLERSENSORUPDATE   EventType = C.SDL_CONTROLLERSENSORUPDATE   // Game controller sensor was updated
+	CONTROLLERTOUCHPADDOWN   EventType = C.SDL_CONTROLLERTOUCHPADDOWN   // Game controller touchpad was touched
+	CONTROLLERTOUCHPADMOTION EventType = C.SDL_CONTROLLERTOUCHPADMOTION // Game controller touchpad finger was moved
+	CONTROLLERTOUCHPADUP     EventType = C.SDL_CONTROLLERTOUCHPADUP     // Game controller touchpad finger was lifted
+	CONTROLLERSENSORUPDATE   EventType = C.SDL_CONTROLLERSENSORUPDATE   // Game controller sensor was updated
 
 	// Touch events
 	FINGERDOWN   EventType = C.SDL_FINGERDOWN   // user has touched input device
@@ -341,6 +341,16 @@ const (
 type Event interface {
 	GetType() EventType   // GetType returns the event type
 	GetTimestamp() uint32 // GetTimestamp returns the timestamp of the event
+}
+
+// EventWindow is a union of window related events.
+type EventWindow interface {
+	GetWindowID() uint32 // GetWindowID returns the window ID of the event
+}
+
+// EventTouch is a union of touch finger events.
+type EventTouch interface {
+	GetTouchID() TouchID // GetTouchID returns the touch ID of the event
 }
 
 // CEvent is a union of all event structures used in SDL.
@@ -413,6 +423,11 @@ func (e WindowEvent) GetTimestamp() uint32 {
 	return e.Timestamp
 }
 
+// GetWindowID returns the window ID of the event.
+func (e WindowEvent) GetWindowID() uint32 {
+	return e.WindowID
+}
+
 // KeyboardEvent contains keyboard key down event information.
 // (https://wiki.libsdl.org/SDL_KeyboardEvent)
 type KeyboardEvent struct {
@@ -435,6 +450,11 @@ func (e KeyboardEvent) GetTimestamp() uint32 {
 	return e.Timestamp
 }
 
+// GetWindowID returns the window ID of the event.
+func (e KeyboardEvent) GetWindowID() uint32 {
+	return e.WindowID
+}
+
 // TextEditingEvent contains keyboard text editing event information.
 // (https://wiki.libsdl.org/SDL_TextEditingEvent)
 type TextEditingEvent struct {
@@ -455,6 +475,11 @@ func (e TextEditingEvent) GetType() EventType {
 // GetTimestamp returns the timestamp of the event.
 func (e TextEditingEvent) GetTimestamp() uint32 {
 	return e.Timestamp
+}
+
+// GetWindowID returns the window ID of the event.
+func (e TextEditingEvent) GetWindowID() uint32 {
+	return e.WindowID
 }
 
 // GetText returns the text as string
@@ -480,6 +505,11 @@ func (e TextInputEvent) GetType() EventType {
 // GetTimestamp returns the timestamp of the event.
 func (e TextInputEvent) GetTimestamp() uint32 {
 	return e.Timestamp
+}
+
+// GetWindowID returns the window ID of the event.
+func (e TextInputEvent) GetWindowID() uint32 {
+	return e.WindowID
 }
 
 // GetText returns the text as string
@@ -512,6 +542,11 @@ func (e MouseMotionEvent) GetTimestamp() uint32 {
 	return e.Timestamp
 }
 
+// GetWindowID returns the window ID of the event.
+func (e MouseMotionEvent) GetWindowID() uint32 {
+	return e.WindowID
+}
+
 // MouseButtonEvent contains mouse button event information.
 // (https://wiki.libsdl.org/SDL_MouseButtonEvent)
 type MouseButtonEvent struct {
@@ -535,6 +570,11 @@ func (e MouseButtonEvent) GetType() EventType {
 // GetTimestamp returns the timestamp of the event.
 func (e MouseButtonEvent) GetTimestamp() uint32 {
 	return e.Timestamp
+}
+
+// GetWindowID returns the window ID of the event.
+func (e MouseButtonEvent) GetWindowID() uint32 {
+	return e.WindowID
 }
 
 // MouseWheelEvent contains mouse wheel event information.
@@ -562,6 +602,11 @@ func (e MouseWheelEvent) GetType() EventType {
 // GetTimestamp returns the timestamp of the event.
 func (e MouseWheelEvent) GetTimestamp() uint32 {
 	return e.Timestamp
+}
+
+// GetWindowID returns the window ID of the event.
+func (e MouseWheelEvent) GetWindowID() uint32 {
+	return e.WindowID
 }
 
 // JoyAxisEvent contains joystick axis motion event information.
@@ -774,9 +819,9 @@ type ControllerSensorEvent struct {
 	Type        EventType  // SDL_CONTROLLERSENSORUPDATE
 	Timestamp   uint32     // In milliseconds, populated using SDL_GetTicks()
 	Which       JoystickID // The joystick instance id
-    Sensor      int32      // The type of the sensor, one of the values of SensorType
+	Sensor      int32      // The type of the sensor, one of the values of SensorType
 	Data        [3]float32 // Up to 3 values from the sensor - additional values can be queried using SDL_SensorGetData()
-    TimestampUs uint64     // The timestamp of the sensor reading in microseconds, if the hardware provides this information.
+	TimestampUs uint64     // The timestamp of the sensor reading in microseconds, if the hardware provides this information.
 }
 type cControllerSensorEvent C.ControllerSensorEvent
 
@@ -836,6 +881,11 @@ func (e TouchFingerEvent) GetTimestamp() uint32 {
 	return e.Timestamp
 }
 
+// GetTouchID returns the touch ID of the event.
+func (e TouchFingerEvent) GetTouchID() TouchID {
+	return e.TouchID
+}
+
 // MultiGestureEvent contains multiple finger gesture event information.
 // (https://wiki.libsdl.org/SDL_MultiGestureEvent)
 type MultiGestureEvent struct {
@@ -858,6 +908,11 @@ func (e MultiGestureEvent) GetType() EventType {
 // GetTimestamp returns the timestamp of the event.
 func (e MultiGestureEvent) GetTimestamp() uint32 {
 	return e.Timestamp
+}
+
+// GetTouchID returns the touch ID of the event.
+func (e MultiGestureEvent) GetTouchID() TouchID {
+	return e.TouchID
 }
 
 // DollarGestureEvent contains complex gesture event information.
@@ -884,6 +939,11 @@ func (e DollarGestureEvent) GetTimestamp() uint32 {
 	return e.Timestamp
 }
 
+// GetTouchID returns the touch ID of the event.
+func (e DollarGestureEvent) GetTouchID() TouchID {
+	return e.TouchID
+}
+
 // DropEvent contains an event used to request a file open by the system.
 // (https://wiki.libsdl.org/SDL_DropEvent)
 type DropEvent struct {
@@ -904,6 +964,11 @@ func (e DropEvent) GetTimestamp() uint32 {
 	return e.Timestamp
 }
 
+// GetWindowID returns the window ID of the event.
+func (e DropEvent) GetWindowID() uint32 {
+	return e.WindowID
+}
+
 // SensorEvent contains data from sensors such as accelerometer and gyroscope
 // (https://wiki.libsdl.org/SDL_SensorEvent)
 type SensorEvent struct {
@@ -911,7 +976,7 @@ type SensorEvent struct {
 	Timestamp   uint32     // In milliseconds, populated using SDL_GetTicks()
 	Which       int32      // The instance ID of the sensor
 	Data        [6]float32 // Up to 6 values from the sensor - additional values can be queried using SDL_SensorGetData()
-    TimestampUs uint64     // The timestamp of the sensor reading in microseconds, if the hardware provides this information.
+	TimestampUs uint64     // The timestamp of the sensor reading in microseconds, if the hardware provides this information.
 }
 type cSensorEvent C.SensorEvent
 
@@ -1012,6 +1077,11 @@ func (e UserEvent) GetType() EventType {
 // GetTimestamp returns the timestamp of the event.
 func (e UserEvent) GetTimestamp() uint32 {
 	return e.Timestamp
+}
+
+// GetWindowID returns the window ID of the event.
+func (e UserEvent) GetWindowID() uint32 {
+	return e.WindowID
 }
 
 // SysWMEvent contains a video driver dependent system event.
@@ -1315,13 +1385,13 @@ func goEvent(cevent *CEvent) Event {
 			Type:      EventType(e._type),
 			Timestamp: uint32(e.timestamp),
 			Which:     JoystickID(e.which),
-            Sensor:    int32(e.sensor),
+			Sensor:    int32(e.sensor),
 			Data: [3]float32{
 				float32(e.data[0]),
 				float32(e.data[1]),
 				float32(e.data[2]),
 			},
-            TimestampUs: uint64(e.timestamp_us),
+			TimestampUs: uint64(e.timestamp_us),
 		}
 	case AUDIODEVICEADDED, AUDIODEVICEREMOVED:
 		e := (*cAudioDeviceEvent)(unsafe.Pointer(cevent))
@@ -1397,7 +1467,7 @@ func goEvent(cevent *CEvent) Event {
 				float32(e.data[4]),
 				float32(e.data[5]),
 			},
-            TimestampUs: uint64(e.timestamp_us),
+			TimestampUs: uint64(e.timestamp_us),
 		}
 	case RENDER_TARGETS_RESET, RENDER_DEVICE_RESET:
 		// This is a CommonEvent as it doesn't currently (sdl-v2.0.22) have any additional fields
